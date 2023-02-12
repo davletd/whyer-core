@@ -15,6 +15,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors())
 
+
+app.get('/', (req, res) => {
+  const name = process.env.NAME || 'World';
+  res.send(`Hello ${name}!`);
+});
+
+
 // Set up the ChatGPT endpoint
 app.post("/chat", async (req, res) => {
   // Get the prompt from the request
@@ -31,7 +38,7 @@ app.post("/chat", async (req, res) => {
 });
 
 // Start the server
-const port = 8080;
+const port = parseInt(process.env.PORT) || 8080;
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`helloworld: listening on port ${port}`);
 });
