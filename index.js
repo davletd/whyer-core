@@ -13,12 +13,17 @@ const openai = new OpenAIApi(configuration);
 // Set up the server
 const app = express();
 app.use(bodyParser.json());
-app.use(cors())
+app.use(cors());
+app.options('*', cors());
 
 
 app.get('/', (req, res) => {
   const name = process.env.NAME || 'World';
   res.send(`Hello ${name}!`);
+});
+
+app.get('/console', (req, res) => {
+  console.log('Hello');
 });
 
 
