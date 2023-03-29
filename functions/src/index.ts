@@ -29,22 +29,42 @@ app.get("/console", (req: any, res: any) => {
 // Set up the ChatGPT endpoint
 app.post("/chat", async (req: any, res: any) => {
   // Get the prompt from the request
-  const {prompt} = req.body;
+  const { prompt, yourAge, religionTopic, discriminationTopic } = req.body;
+	const religionTopicText = religionTopic ? ", religion" : "";
+	const discriminationTopicText = discriminationTopic ? ", race, gender, discrimination" : "";
 
   // Generate a response with ChatGPT
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
+        { 
+          role: "system", 
+          content: "You are a teaching AI assistant for kids. You always give friendly but detailed answers to the questions."
+        },
+        { 
+          role: "assistant", 
+          content: "Your name is WHYer the DINO. You helping kids learn, do homework and enjoy finding new things about the world."
+        },
+        {
+          role: "assistant",
+          content: `Do not give answers to questions and topics about sexuality, human reproduction, violence ${religionTopicText}${discriminationTopicText}. Instead, refer to parents or teachers.`
+        },
+        {
+          role: "user",
+          content: `I am ${yourAge} year old. Give answer appropriate for my age.`
+        },
         {
           role: "user",
           content: prompt,
+          
         },
       ],
     });
     console.log(completion?.data?.choices[0]?.message?.content);
     res.send(completion?.data?.choices[0]?.message?.content);
   } catch (error: any) {
+    res.send("Oops... Seems like we might have some issues. Please contact whyerapp@gmail.com or call +4796658139");
     if (error.response) {
       console.log(error.response.status);
       console.log(error.response.data);
